@@ -2,5 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TextView
+        android:text="@string/Neglect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:textSize="40dp"
+        android:id="@+id/textView" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="검사시작"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:onClick="onClick_startTest"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="실험시작"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:onClick="onClick_startExperiment"/>
 </LinearLayout>
