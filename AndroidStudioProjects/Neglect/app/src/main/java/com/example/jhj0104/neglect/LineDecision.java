@@ -32,7 +32,6 @@ public class LineDecision extends AppCompatActivity{
         memo.setMovementMethod(new ScrollingMovementMethod());
     }
 
-
     public LineDecision() throws FileNotFoundException {
     }
 
@@ -52,9 +51,10 @@ public class LineDecision extends AppCompatActivity{
         Toast.makeText(this, "delete 완료", Toast.LENGTH_SHORT).show();
     }
     public void onClick_OK(View view){
-        Toast.makeText(getApplicationContext(), "~번 남았습니다.", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getApplicationContext(),LineBisection.class);
-        startActivity(intent);
+//        Intent intent = new Intent(getApplicationContext(),LineBisection.class);
+//        startActivity(intent);
+        finish();
+        finish();
     }
 }
 

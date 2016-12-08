@@ -36,7 +36,6 @@ public class BestPaintBoard extends View {
     static List<String> lastedX= new ArrayList<>();
     static List<String> lastedY= new ArrayList<>();
 
-
     int repeatNum=0;
 
     Stack undos = new Stack();
@@ -58,9 +57,6 @@ public class BestPaintBoard extends View {
 
     private static final boolean RENDERING_ANTIALIAS = true;
     private static final boolean DITHER_FLAG = true;
-
-    private int mCertainColor = 0xFF000000;
-    private float mStrokeWidth = 5.0f;
 
     private float Width;     // 길이 기준
     private float Height;    // 전체 길이
@@ -104,11 +100,11 @@ public class BestPaintBoard extends View {
         // create a new paint object
         mPaint = new Paint();
         mPaint.setAntiAlias(RENDERING_ANTIALIAS);
-        mPaint.setColor(mCertainColor);
+        mPaint.setColor(0xFF000000);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(mStrokeWidth);
+        mPaint.setStrokeWidth(5.0f);
         mPaint.setDither(DITHER_FLAG);
 
         lastX = -1;
@@ -244,6 +240,7 @@ public class BestPaintBoard extends View {
                     invalidate(rect);
                 }
                 mPath.rewind();
+
                 Button goNext = (Button) getRootView().findViewById(R.id.btn_goNext);
                 goNext.setVisibility(VISIBLE);
                 return true;
@@ -348,4 +345,6 @@ public class BestPaintBoard extends View {
         }
         return mInvalidRect;
     }
+
+
 }
