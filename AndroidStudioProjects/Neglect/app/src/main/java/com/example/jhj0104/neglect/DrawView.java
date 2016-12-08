@@ -23,7 +23,6 @@ import java.util.List;
 public class DrawView extends View {
 
     float nowX, nowY, lastX, lastY;
-
     Paint mPaint;
     List<Vertex> arVertex;
 
@@ -143,4 +142,6 @@ public class DrawView extends View {
             }
         }
     }
+
+
 }
