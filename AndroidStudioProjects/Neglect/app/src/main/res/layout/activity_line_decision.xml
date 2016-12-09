@@ -44,8 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="265dp"
         android:scrollbars="vertical"
-        android:textSize="17dp"
-        android:hint="메모할 내용을 입력해주세요"
+        android:hint="press SAVE + LOAD!!"
+        android:textSize="20dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 </RelativeLayout>

@@ -21,7 +21,7 @@
         android:visibility="gone"
         />
 
-    <com.example.jhj0104.neglect.BestPaintBoard
+    <com.example.jhj0104.neglect.DrawView
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

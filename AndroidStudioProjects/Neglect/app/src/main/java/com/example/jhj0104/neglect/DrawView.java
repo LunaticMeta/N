@@ -1,16 +1,20 @@
 package com.example.jhj0104.neglect;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.jhj0104.neglect.common.MyLine;
+import com.example.jhj0104.neglect.common.MyLineSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,22 +26,25 @@ import java.util.List;
 //http://androiddeveloper.tistory.com/43
 public class DrawView extends View {
 
+    static List<TestInfo> LBinfoes = new ArrayList<>();
+
+    static List<String> DInfoType= new ArrayList<>();
+    static List<String> DRepeat= new ArrayList<>();
+    static List<String> DMode= new ArrayList<>();
+    static List<String> DX= new ArrayList<>();
+    static List<String> DY= new ArrayList<>();
+    static List<String> DlastedX= new ArrayList<>();
+    static List<String> DlastedY= new ArrayList<>();
+
+
+    Intent intent = ((Activity) getContext()).getIntent();
+    Loop loop = (Loop) intent.getSerializableExtra("LoopData");
+    int repeatNum = loop.loopNum;
+    boolean isPractice = loop.Practice;
+
     float nowX, nowY, lastX, lastY;
     Paint mPaint;
     List<Vertex> arVertex;
-
-    public class Vertex {
-        float x;
-        float y;
-        boolean draw;
-
-        // 그리기 여부
-        public Vertex(float x, float y, boolean draw) {
-            this.x = x;
-            this.y = y;
-            this.draw = draw;
-        }
-    }
 
     private float Width;     // 길이 기준
     private float Height;    // 전체 길이
@@ -55,6 +62,8 @@ public class DrawView extends View {
 
     public DrawView(Context context){
         super(context);
+
+
 
         init(context);
     }
@@ -90,29 +99,87 @@ public class DrawView extends View {
     }
 
     /** 터치이벤트를 받는 함수 */
+
+    // gtlee code
+    private boolean bPressed = false;
+    private Vertex prevVtx = new Vertex(0,0);
+    private MyLineSet set;
+    private List<MyLineSet> lineSets = new ArrayList<>();
+    // end of gtlee code
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Path path = new Path();
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                arVertex.add(new Vertex(event.getX(), event.getY(), false));
-                lastX = nowX;
-                lastY = nowY;
-                nowX = event.getX();
-                nowY = event.getY();
-                invalidate();
+                case MotionEvent.ACTION_DOWN:
+                if(isPractice == false){
+                    DInfoType.add("LineBisection");
+                    DRepeat.add(Integer.toString(repeatNum));
+                }
+
+                float[] point_down = {event.getX(), event.getY()};
+                arVertex.add(new Vertex(point_down[0], point_down[1], false));
+
+                    // gtlee code
+                    bPressed = true;
+                    set = new MyLineSet();
+                    lineSets.add( set );
+                    prevVtx = new  Vertex( point_down[0], point_down[1] );
+                    // end of gtlee code
+
+                if(isPractice == false){
+                    DMode.add("1");
+                    DlastedX.add(Float.toString(point_down[0]));
+                    DlastedY.add(Float.toString(point_down[1]));
+                    DX.add(Float.toString(point_down[0]));
+                    DY.add(Float.toString(point_down[1]));
+                }
+
                 break;
             case MotionEvent.ACTION_MOVE:
-                arVertex.add(new Vertex(event.getX(), event.getY(), true));
-                lastX = nowX;
-                lastY = nowY;
-                nowX = event.getX();
-                nowY = event.getY();
+                if(isPractice == false){
+                    DInfoType.add("LineBisection");
+                    DRepeat.add(Integer.toString(repeatNum));
+                }
+
+                float[] point_move = {event.getX(), event.getY()};
+                arVertex.add(new Vertex(point_move[0], point_move[1], true));
+
+                // gtlee code
+                if( bPressed ) {
+                    Vertex curVtx = new Vertex( point_move[0], point_move[1] );
+                    set.addMyLine( new MyLine( prevVtx, curVtx ) );
+                    prevVtx = curVtx;
+                    System.out.println("move : " + prevVtx + " - " + curVtx );
+                }
+                // end of gtlee code
+
+
+
+
                 invalidate();
+
+                if(isPractice == false) {
+                    DMode.add("2");
+                    DlastedX.add(Float.toString(lastX));
+                    DlastedY.add(Float.toString(lastY));
+                    DX.add(Float.toString(point_move[0]));
+                    DY.add(Float.toString(point_move[1]));
+                }
+
+                lastX = point_move[0];
+                lastY = point_move[1];
+
                 break;
             case MotionEvent.ACTION_UP:
                 Button goNext = (Button) getRootView().findViewById(R.id.btn_goNext);
                 goNext.setVisibility(VISIBLE);
+
+                // gtlee code
+                bPressed = false;
+                prevVtx.set( event.getX(), event.getY() );
+                System.out.println("up");
+                // end of gtlee code
+
                 break;
         }
         // onDraw() 호출
@@ -132,13 +199,31 @@ public class DrawView extends View {
         canvas.drawColor(Color.WHITE);
         canvas.drawLine(LineMargin, centerY, Width-LineMargin, centerY, paint);
 
+        /*
         for (int i = 0; i < arVertex.size(); i++) {
+
             if (arVertex.get(i).draw) {
                 canvas.drawLine(arVertex.get(i-1).x, arVertex.get(i-1).y, arVertex.get(i).x, arVertex.get(i).y, mPaint);
-                //canvas.drawLine(lastX, lastY, arVertex.get(i).x, arVertex.get(i).y, mPaint);
+
             } else {
-                //canvas.drawPoint(arVertex.get(i).x, arVertex.get(i).y, mPaint);
-                canvas.drawPoint(nowX, nowY, mPaint);
+                float[] point = {nowX, nowY};
+                canvas.drawPoint(point[0], point[1], mPaint);
+
+
+            }
+        }
+        */
+        for (int i = 0; i < lineSets.size(); i++) {
+            MyLineSet set = lineSets.get(i);
+            for( int j = 0; j < set.getLines().size(); ++ j) {
+                MyLine l = set.getLines().get(j);
+                canvas.drawLine( l.getStartPt().getX(),
+                        l.getStartPt().getY(),
+                        l.getEndPt().getX(),
+                        l.getEndPt().getY(),
+                        mPaint
+                );
+
             }
         }
     }

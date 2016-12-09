@@ -139,36 +139,11 @@ public class BestPaintBoard extends View {
         undos.push(img);
         Log.i("GoodPaintBoard", "saveUndo() called.");
     }
-
-    public void undo()
-    {
-        Bitmap prev = null;
-        try {
-            prev = (Bitmap)undos.pop();
-        } catch(Exception ex) {
-            Log.e("GoodPaintBoard", "Exception : " + ex.getMessage());
-        }
-
-        if (prev != null){
-            drawBackground(mCanvas);
-            mCanvas.drawBitmap(prev, 0, 0, mPaint);
-            invalidate();
-
-            prev.recycle();
-        }
-
-        Log.i("GoodPaintBoard", "undo() called.");
-    }
     public void drawBackground(Canvas canvas)
     {
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
         }
-    }
-    public void updatePaintProperty(int color, int size)
-    {
-        mPaint.setColor(color);
-        mPaint.setStrokeWidth(size);
     }
     public void newImage(int width, int height)
     {
@@ -183,38 +158,6 @@ public class BestPaintBoard extends View {
 
         changed = false;
         invalidate();
-    }
-    public void setImage(Bitmap newImage)
-    {
-        changed = false;
-
-        setImageSize(newImage.getWidth(),newImage.getHeight(),newImage);
-        invalidate();
-    }
-    public void setImageSize(int width, int height, Bitmap newImage)
-    {
-        if (mBitmap != null){
-            if (width < mBitmap.getWidth()) width = mBitmap.getWidth();
-            if (height < mBitmap.getHeight()) height = mBitmap.getHeight();
-        }
-
-        if (width < 1 || height < 1) return;
-
-        Bitmap img = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas();
-        drawBackground(canvas);
-
-        if (newImage != null) {
-            canvas.setBitmap(newImage);
-        }
-
-        if (mBitmap != null) {
-            mBitmap.recycle();
-            mCanvas.restore();
-        }
-        mBitmap = img;
-        mCanvas = canvas;
-        clearUndo();
     }
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (w > 0 && h > 0) {
@@ -290,8 +233,6 @@ public class BestPaintBoard extends View {
         return mInvalidRect;
     }
 
-
-
     private Rect touchMove(MotionEvent event) {
         Rect rect = processMove(event);
         return rect;
@@ -308,10 +249,6 @@ public class BestPaintBoard extends View {
 
         final float dx = Math.abs(x - lastX);
         final float dy = Math.abs(y - lastY);
-
-
-
-
 
         Rect mInvalidRect = new Rect();
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
@@ -345,6 +282,4 @@ public class BestPaintBoard extends View {
         }
         return mInvalidRect;
     }
-
-
 }

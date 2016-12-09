@@ -25,7 +25,10 @@ public class LineBisection extends AppCompatActivity {
 
         if(isPractice==true){
             Toast.makeText(getApplicationContext(), "연습 테스트입니다. "+(3-loopNum)+"회 남음.", Toast.LENGTH_SHORT).show();
-
+            if(loopNum==2){
+                Button goNext = (Button) findViewById(R.id.btn_goNext);
+                goNext.setText("테스트 시작");
+            }
         }
         else{
             if(loopNum!=10)Toast.makeText(getApplicationContext(), "테스트가 "+(11-loopNum)+"번 남았습니다", Toast.LENGTH_SHORT).show();
@@ -44,24 +47,22 @@ public class LineBisection extends AppCompatActivity {
         String str = "";
 
         List<List<String>> strList = new ArrayList<List<String>>();
-        strList.add(BestPaintBoard.InfoType);
-        strList.add(BestPaintBoard.Repeat);
-        strList.add(BestPaintBoard.Mode);
-        strList.add(BestPaintBoard.X);
-        strList.add(BestPaintBoard.Y);
-        strList.add(BestPaintBoard.lastedX);
-        strList.add(BestPaintBoard.lastedY);
+        strList.add(DrawView.DInfoType);
+        strList.add(DrawView.DRepeat);
+        strList.add(DrawView.DMode);
+        strList.add(DrawView.DX);
+        strList.add(DrawView.DY);
+        strList.add(DrawView.DlastedX);
+        strList.add(DrawView.DlastedY);
 
 
-        str += "-----------------NEW ONE-----------------";
         for(int i=0; i<strList.get(0).size(); i++){
             for(int j=0; j<7;j++){
-                str += strList.get(j).get(i);
+                    str += strList.get(j).get(i);
                 if(j!=6)str+=",";
             }
-            str+="; ";
+            str+=", ";
         }
-
 
         Toast.makeText(getApplicationContext(), "라인 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(),LineDecision.class);
@@ -69,4 +70,10 @@ public class LineBisection extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    @Override
+    public void onBackPressed() {
+        //실제 테스트 시 막아놓는다.
+        super.onBackPressed();
+    }
+
 }

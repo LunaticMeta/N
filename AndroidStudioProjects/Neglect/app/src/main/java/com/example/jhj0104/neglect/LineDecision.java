@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 
 public class LineDecision extends AppCompatActivity{
 
+    String[][] IdontKnow;
     String myInfo_str = null;
     TextView memo;
     TextFileManager mTextFileManager = new TextFileManager(this);
@@ -25,11 +26,24 @@ public class LineDecision extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_decision);
 
+
+
         Intent intent = getIntent();
         myInfo_str = intent.getStringExtra("LBinfo");
         memo = (TextView) findViewById(R.id.memoMemo);
-        //memo.setText(myInfo_str);
+        memo.setText(myInfo_str);
         memo.setMovementMethod(new ScrollingMovementMethod());
+
+
+//        Loop loop = (Loop) intent.getSerializableExtra("LoopData");
+//        int repeatNum = loop.loopNum;
+//        boolean isPractice = loop.Practice;
+
+        String[] aa = myInfo_str.split("[,]]");
+        //
+        for(String s: aa){
+
+        }
     }
 
     public LineDecision() throws FileNotFoundException {
@@ -56,5 +70,6 @@ public class LineDecision extends AppCompatActivity{
         finish();
         finish();
     }
+
 }
 
