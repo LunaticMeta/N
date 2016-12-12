@@ -26,8 +26,6 @@ public class LineDecision extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_decision);
 
-
-
         Intent intent = getIntent();
         myInfo_str = intent.getStringExtra("LBinfo");
         memo = (TextView) findViewById(R.id.memoMemo);

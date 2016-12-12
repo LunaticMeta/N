@@ -153,9 +153,6 @@ public class DrawView extends View {
                 }
                 // end of gtlee code
 
-
-
-
                 invalidate();
 
                 if(isPractice == false) {
@@ -201,18 +198,16 @@ public class DrawView extends View {
 
         /*
         for (int i = 0; i < arVertex.size(); i++) {
-
             if (arVertex.get(i).draw) {
                 canvas.drawLine(arVertex.get(i-1).x, arVertex.get(i-1).y, arVertex.get(i).x, arVertex.get(i).y, mPaint);
 
             } else {
                 float[] point = {nowX, nowY};
                 canvas.drawPoint(point[0], point[1], mPaint);
-
-
             }
         }
         */
+
         for (int i = 0; i < lineSets.size(); i++) {
             MyLineSet set = lineSets.get(i);
             for( int j = 0; j < set.getLines().size(); ++ j) {
