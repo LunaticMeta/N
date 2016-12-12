@@ -2,6 +2,7 @@ package com.example.jhj0104.neglect;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -12,12 +13,13 @@ import android.widget.TextView;
 public class GetLinesIntersect extends AppCompatActivity {
     float Width = 1920;
     float centerY = 540;
+    float centerX = Width/2.0f;
     float LineMargin = 251.6f;
     boolean Intersect = true;
 
     float[] x = {0f,0f};
     float[] y = {0f,0f};
-    float[] X = {LineMargin,(LineMargin+10f)};
+    float[] X = {LineMargin,(LineMargin+1700f)};
     float[] Y = {centerY,centerY};
 
     double t;
@@ -28,6 +30,7 @@ public class GetLinesIntersect extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_decision);
     }
+
     public void onClick_submitXY (View view){
         EditText xx1 = (EditText) findViewById(R.id.xx1);
         EditText xx2 = (EditText) findViewById(R.id.xx2);
@@ -44,6 +47,7 @@ public class GetLinesIntersect extends AppCompatActivity {
 
         textView.setText(point);
     }
+
     //http://blog.naver.com/tobsysco/90189606643
     public String GetIntersect(double p1_x, double p1_y, double p2_x, double p2_y, double p3_x, double p3_y, double p4_x, double p4_y){
         double FI1 = 0, FI2 = 0, FC1 = 0, FC2 = 0, FS1 = 0, FS2 = 0;
@@ -76,6 +80,21 @@ public class GetLinesIntersect extends AppCompatActivity {
 
         if(x< p3_x || x> p4_x) return "-2\n"+ x+", "+y;
         if(x< p1_x || x> p2_x || y < p1_y || y > p2_y) return "-3\n"+ x+", "+y;
-        return x+", "+y;
+
+        return x+", "+y+"\n"+ErrorPixel(x);
+    }
+
+    public String ErrorPixel(double x){
+        DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+        float DPI = dm.densityDpi;
+
+        String result;
+        double err_pixel = Math.abs(centerX-x);
+        double err_mm = (err_pixel*2.54)/DPI*10;
+
+        result = "Error pixel : "+err_pixel;
+        result += "\nError mm :"+err_mm;
+
+        return result;
     }
 }
