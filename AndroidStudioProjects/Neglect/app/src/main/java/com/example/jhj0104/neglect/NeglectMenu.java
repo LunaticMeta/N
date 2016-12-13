@@ -14,9 +14,16 @@ public class NeglectMenu extends AppCompatActivity {
     }
     public void onClick_startTest (View view){
         Loop loop;
-        for(int i=11;i>=0;i--){
-            if(i<2) loop = new Loop("LineBisection", true, i+1);
-            else loop = new Loop("LineBisection", false, i-1);
+        new FileName();
+        for(int i=10;i>0;i--){ //TEST
+            loop = new Loop("LineBisection", false, i);
+
+            Intent intent = new Intent(getApplicationContext(),LineBisection.class);
+            intent.putExtra("LoopData", loop);
+            startActivity(intent);
+        }
+        for(int i=2; i>0; i--){ //practice
+            loop = new Loop("LineBisection", true, i);
 
             Intent intent = new Intent(getApplicationContext(),LineBisection.class);
             intent.putExtra("LoopData", loop);
@@ -24,5 +31,7 @@ public class NeglectMenu extends AppCompatActivity {
         }
     }
     public void onClick_startExperiment (View view){
+        Intent intent = new Intent(getApplicationContext(),GetLinesIntersect.class);
+        startActivity(intent);
     }
 }

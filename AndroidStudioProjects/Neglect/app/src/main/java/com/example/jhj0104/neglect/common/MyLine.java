@@ -11,7 +11,12 @@ public class MyLine {
     private Vertex startPt;
     private Vertex endPt;
 
-    public MyLine( float sx, float sy, float ex, float ey ){
+    public MyLine( float sx, float sy, float ex, float ey){
+        startPt = new Vertex(sx, sy);
+        endPt = new Vertex(ex, ey);
+    }
+    //add time
+    public MyLine( float sx, float sy, float ex, float ey, float time){
         startPt = new Vertex(sx, sy);
         endPt = new Vertex(ex, ey);
     }

@@ -28,15 +28,6 @@ public class DrawView extends View {
 
     static List<TestInfo> LBinfoes = new ArrayList<>();
 
-    static List<String> DInfoType= new ArrayList<>();
-    static List<String> DRepeat= new ArrayList<>();
-    static List<String> DMode= new ArrayList<>();
-    static List<String> DX= new ArrayList<>();
-    static List<String> DY= new ArrayList<>();
-    static List<String> DlastedX= new ArrayList<>();
-    static List<String> DlastedY= new ArrayList<>();
-
-
     Intent intent = ((Activity) getContext()).getIntent();
     Loop loop = (Loop) intent.getSerializableExtra("LoopData");
     int repeatNum = loop.loopNum;
@@ -46,25 +37,18 @@ public class DrawView extends View {
     Paint mPaint;
     List<Vertex> arVertex;
 
-    private float Width;     // 길이 기준
-    private float Height;    // 전체 길이
+    private float Width;
+    private float Height;
     private float LinePixel;
     private float LineMargin;
-    private float centerY;     // 기준점
+    private float centerY;
 
-
-    // 페인트 객체 선언
     public DrawView(Context context, AttributeSet attrSet ){
         super(context, attrSet);
-
         init(context);
     }
-
     public DrawView(Context context){
         super(context);
-
-
-
         init(context);
     }
 
@@ -104,45 +88,45 @@ public class DrawView extends View {
     private boolean bPressed = false;
     private Vertex prevVtx = new Vertex(0,0);
     private MyLineSet set;
-    private List<MyLineSet> lineSets = new ArrayList<>();
+    public static List<MyLineSet> lineSets = new ArrayList<>();
     // end of gtlee code
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                if(isPractice == false){
-                    DInfoType.add("LineBisection");
-                    DRepeat.add(Integer.toString(repeatNum));
-                }
+//               if(isPractice == false){
+//                    DInfoType.add("LineBisection");
+//                    DRepeat.add(Integer.toString(repeatNum));
+//                }
 
                 float[] point_down = {event.getX(), event.getY()};
-                arVertex.add(new Vertex(point_down[0], point_down[1], false));
+                //arVertex.add(new Vertex(point_down[0], point_down[1], false));
 
                     // gtlee code
                     bPressed = true;
                     set = new MyLineSet();
                     lineSets.add( set );
-                    prevVtx = new  Vertex( point_down[0], point_down[1] );
+                    prevVtx = new  Vertex( point_down[0], point_down[1], true);
                     // end of gtlee code
 
                 if(isPractice == false){
-                    DMode.add("1");
-                    DlastedX.add(Float.toString(point_down[0]));
-                    DlastedY.add(Float.toString(point_down[1]));
-                    DX.add(Float.toString(point_down[0]));
-                    DY.add(Float.toString(point_down[1]));
+//                    DMode.add("1");
+//                    DlastedX.add(Float.toString(point_down[0]));
+//                    DlastedY.add(Float.toString(point_down[1]));
+//                    DX.add(Float.toString(point_down[0]));
+//                    DY.add(Float.toString(point_down[1]));
                 }
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                if(isPractice == false){
-                    DInfoType.add("LineBisection");
-                    DRepeat.add(Integer.toString(repeatNum));
-                }
+//                if(isPractice == false){
+//                    DInfoType.add("LineBisection");
+//                    DRepeat.add(Integer.toString(repeatNum));
+//                }
 
                 float[] point_move = {event.getX(), event.getY()};
-                arVertex.add(new Vertex(point_move[0], point_move[1], true));
+                //arVertex.add(new Vertex(point_move[0], point_move[1], false));
 
                 // gtlee code
                 if( bPressed ) {
@@ -152,16 +136,15 @@ public class DrawView extends View {
                     System.out.println("move : " + prevVtx + " - " + curVtx );
                 }
                 // end of gtlee code
-
                 invalidate();
 
-                if(isPractice == false) {
-                    DMode.add("2");
-                    DlastedX.add(Float.toString(lastX));
-                    DlastedY.add(Float.toString(lastY));
-                    DX.add(Float.toString(point_move[0]));
-                    DY.add(Float.toString(point_move[1]));
-                }
+//                if(isPractice == false) {
+//                    DMode.add("2");
+//                    DlastedX.add(Float.toString(lastX));
+//                    DlastedY.add(Float.toString(lastY));
+//                    DX.add(Float.toString(point_move[0]));
+//                    DY.add(Float.toString(point_move[1]));
+//                }
 
                 lastX = point_move[0];
                 lastY = point_move[1];
@@ -200,7 +183,6 @@ public class DrawView extends View {
         for (int i = 0; i < arVertex.size(); i++) {
             if (arVertex.get(i).draw) {
                 canvas.drawLine(arVertex.get(i-1).x, arVertex.get(i-1).y, arVertex.get(i).x, arVertex.get(i).y, mPaint);
-
             } else {
                 float[] point = {nowX, nowY};
                 canvas.drawPoint(point[0], point[1], mPaint);
@@ -208,19 +190,25 @@ public class DrawView extends View {
         }
         */
 
+//        int lastNum = lineSets.size();
+//        if(lastNum >0) {
+//            MyLineSet set = lineSets.get(lastNum - 1);
+//            for (int j = 0; j < set.getLines().size(); ++j) {
+//                MyLine l = set.getLines().get(j);
+//                canvas.drawLine(l.getStartPt().getX(), l.getStartPt().getY(), l.getEndPt().getX(), l.getEndPt().getY(), mPaint);
+//            }
+//        }
+
+
+        // gtlee code
         for (int i = 0; i < lineSets.size(); i++) {
             MyLineSet set = lineSets.get(i);
             for( int j = 0; j < set.getLines().size(); ++ j) {
                 MyLine l = set.getLines().get(j);
-                canvas.drawLine( l.getStartPt().getX(),
-                        l.getStartPt().getY(),
-                        l.getEndPt().getX(),
-                        l.getEndPt().getY(),
-                        mPaint
-                );
-
+                canvas.drawLine(l.getStartPt().getX(), l.getStartPt().getY(), l.getEndPt().getX(), l.getEndPt().getY(), mPaint);
             }
         }
+        // end of gtlee code
     }
 
 

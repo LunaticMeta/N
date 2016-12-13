@@ -7,6 +7,7 @@ package com.example.jhj0104.neglect;
 public class Vertex {
     float x;
     float y;
+    float time;
     boolean draw;
 
     public Vertex( float x, float y ){

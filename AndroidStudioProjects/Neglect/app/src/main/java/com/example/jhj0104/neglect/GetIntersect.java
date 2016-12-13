@@ -2,50 +2,40 @@ package com.example.jhj0104.neglect;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
+
+import static android.R.attr.centerX;
 
 /**
- * Created by jhj0104 on 2016-12-12.
- * point 사용하세요 point_2 안됨.... ㅡㅡ;;
+ * Created by jhj0104 on 2016-12-13.
  */
-public class GetLinesIntersect extends AppCompatActivity {
+
+public class GetIntersect extends AppCompatActivity{
 
     DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+
     float LineLength = 1700f;
     float Width = 1920;
     float centerY = 540;
-    float centerX = Width/2.0f;
     float LineMargin = 251.6f;
+    boolean Intersect = true;
 
     float[] x = {0f,0f};
     float[] y = {0f,0f};
-    float[] X = {LineMargin,(LineMargin+LineLength)};
+    float[] X = {LineMargin,(LineMargin+10f)};
     float[] Y = {centerY,centerY};
 
-    public void onClick_submitXY (View view){
-        EditText xx1 = (EditText) findViewById(R.id.xx1);
-        EditText xx2 = (EditText) findViewById(R.id.xx2);
-        EditText yy1 = (EditText) findViewById(R.id.yy1);
-        EditText yy2 = (EditText) findViewById(R.id.yy2);
+    double t;
+    double s;
 
-        x[0] = Float.parseFloat(xx1.getText().toString());
-        y[0] = Float.parseFloat(yy1.getText().toString());
-        x[1] = Float.parseFloat(xx2.getText().toString());
-        y[1] = Float.parseFloat(xx2.getText().toString());
 
-        TextView textView = (TextView) findViewById(R.id.intersection);
-        String point = GetIntersect(x[0],y[0],x[1],y[1],X[0],Y[0],X[1],Y[1]);
-        textView.setText(point);
-    }
-
-    // 교점 & 교점의 좌표 찾기
-    // 참고 : http://blog.naver.com/tobsysco/90189606643
-    public String GetIntersect(double p1_x, double p1_y, double p2_x, double p2_y, double p3_x, double p3_y, double p4_x, double p4_y){
+    public String GetIntersect2(double p1_x, double p1_y, double p2_x, double p2_y){
         //F = float(double로 후에 변경), increase, constant, sameValue;
         double FI1 = 0, FI2 = 0, FC1 = 0, FC2 = 0, FS1 = 0, FS2 = 0;
         double x, y;
+        double p3_x = X[0];
+        double p3_y = X[1];
+        double p4_x = Y[0];
+        double p4_y = Y[1];
 
         if(p1_x == p2_x) FS1 = p1_x;
         else{
@@ -82,7 +72,6 @@ public class GetLinesIntersect extends AppCompatActivity {
     public String ErrorSize(double x){
 
         float DPI = dm.densityDpi;
-
         double err_pixel = Math.abs(centerX-x);
         double err_mm = (err_pixel*2.54)/DPI*10;
         double err_per = (err_pixel/LineLength)*100;
