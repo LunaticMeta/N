@@ -26,7 +26,6 @@ import java.util.List;
 //http://androiddeveloper.tistory.com/43
 public class DrawView extends View {
 
-    static List<TestInfo> LBinfoes = new ArrayList<>();
 
     Intent intent = ((Activity) getContext()).getIntent();
     Loop loop = (Loop) intent.getSerializableExtra("LoopData");
@@ -88,7 +87,8 @@ public class DrawView extends View {
     private boolean bPressed = false;
     private Vertex prevVtx = new Vertex(0,0);
     private MyLineSet set;
-    public static List<MyLineSet> lineSets = new ArrayList<>();
+    public List<MyLineSet> lineSets = new ArrayList<>();
+    public static List<MyLineSet> lineSetsStatic = new ArrayList<>();
     // end of gtlee code
 
     @Override
@@ -107,6 +107,7 @@ public class DrawView extends View {
                     bPressed = true;
                     set = new MyLineSet();
                     lineSets.add( set );
+                    lineSetsStatic.add(set);
                     prevVtx = new  Vertex( point_down[0], point_down[1], true);
                     // end of gtlee code
 

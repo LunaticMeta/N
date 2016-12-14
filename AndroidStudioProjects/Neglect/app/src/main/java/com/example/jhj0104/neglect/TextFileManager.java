@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.jhj0104.neglect.FileName.fileName;
 
 /**
  * Created by jhj0104 on 2016-12-13.
@@ -15,6 +16,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class TextFileManager {
     final String FILE_NAME = FileName.fileName;
+    final String FILE_NAME_result = fileName+"_result";
     Context mContext = null;
 
     public TextFileManager(Context context) throws FileNotFoundException {

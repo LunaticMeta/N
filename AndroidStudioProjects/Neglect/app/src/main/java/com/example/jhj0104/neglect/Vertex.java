@@ -53,7 +53,7 @@ public class Vertex {
     }
 
     public String toString(){
-        String str = "X : " + x + ", Y : " + y;
+        String str = x+", "+y+"\n";
         return str;
     }
 }

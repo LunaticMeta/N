@@ -2,6 +2,7 @@ package com.example.jhj0104.neglect;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -12,11 +13,12 @@ import android.widget.Toast;
 import com.example.jhj0104.neglect.common.MyLine;
 import com.example.jhj0104.neglect.common.MyLineSet;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static android.R.attr.centerX;
-import static com.example.jhj0104.neglect.DrawView.lineSets;
+import static com.example.jhj0104.neglect.DrawView.lineSetsStatic;
 import static com.example.jhj0104.neglect.FileName.fileName;
 
 public class LineBisection extends AppCompatActivity {
@@ -29,6 +31,7 @@ public class LineBisection extends AppCompatActivity {
 
     float[] X = {LineMargin,(LineMargin+LineLength)};
     float[] Y = {centerY,centerY};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,12 @@ public class LineBisection extends AppCompatActivity {
 
     public void onClick_goNext (View view) throws IOException {
 
+        File sdcard = Environment.getExternalStorageDirectory();
+        File file = new File(sdcard, "my/ans.txt");
+        StringBuilder text = new StringBuilder();
+
+
+
         final String FILE_NAME = fileName;
         final String FILE_NAME_result = fileName+"_result";
 
@@ -70,10 +79,13 @@ public class LineBisection extends AppCompatActivity {
         reportWriter = getApplicationContext().openFileOutput(FILE_NAME, MODE_PRIVATE);
         reportWriter_result = getApplicationContext().openFileOutput(FILE_NAME_result, MODE_PRIVATE);
 
+        Environment.getExternalStorageDirectory().getAbsolutePath();
+
+
         boolean isContact = false;
 
-        for (int i = 0; i < lineSets.size(); i++) {
-            MyLineSet set = lineSets.get(i);
+        for (int i = 0; i < lineSetsStatic.size(); i++) {
+            MyLineSet set = lineSetsStatic.get(i);
             for( int j = 0; j < set.getLines().size(); ++ j) {
                 MyLine l = set.getLines().get(j);
 
@@ -97,6 +109,13 @@ public class LineBisection extends AppCompatActivity {
                         String answer = ContactData(StartX, StartY, EndX, EndY);
                         reportWriter_result.write((answer+"\n").getBytes());
                     }
+/*
+                    Vertex intersectedPoint = isContacted_1( StartX, StartY, EndX, EndY );
+                    if( intersectedPoint != null ){
+                        reportWriter_result.write( (intersectedPoint.toString()
+                                + ErrorSize( intersectedPoint.getX() ) + "\n").getBytes() );
+                    }
+                    */
                 }
             }
             reportWriter.write("\n".getBytes());
@@ -116,6 +135,26 @@ public class LineBisection extends AppCompatActivity {
         //실제 테스트 시 막는다.
         super.onBackPressed();
     }
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+
 
     public boolean isContacted(double p1_x, double p1_y, double p2_x, double p2_y){
         //F = float(double로 후에 변경), increase, constant, sameValue;
@@ -153,6 +192,45 @@ public class LineBisection extends AppCompatActivity {
 
         return true;
     }
+
+    public Vertex isContacted_1(double p1_x, double p1_y, double p2_x, double p2_y){
+        //F = float(double로 후에 변경), increase, constant, sameValue;
+        double FI1 = 0, FI2 = 0, FC1 = 0, FC2 = 0, FS1 = 0, FS2 = 0;
+        double x, y;
+        double p3_x = X[0], p3_y = X[1], p4_x = Y[0], p4_y = Y[1];
+
+        if(p1_x == p2_x) FS1 = p1_x;
+        else{
+            FI1 = (p2_y - p1_y) / (p2_x - p1_x);
+            FC1 = p1_y - FI1*p1_x;
+        }
+        if(p3_x == p4_x) FS2 = p3_x;
+        else{
+            FI2 = (p4_y - p3_y) / (p4_x - p3_x);
+            FC2 = p3_y - FI2*p3_x;
+        }
+
+        if(p1_x == p2_x && p3_x == p4_x) return null;
+        if(p1_x == p2_x){
+            x = FS1;
+            y = FI2*FS1+FC2;
+        }
+        else if(p3_x == p4_x){
+            x = FS2;
+            y = FI1*FS2+FC1;
+        }
+        else{
+            x = -(FC1-FC2) / (FI1-FI2);
+            y = FI1*x+FC1;
+        }
+
+        if(x< p3_x || x> p4_x) return null;
+        if(x< p1_x || x> p2_x || y < p1_y || y > p2_y) return null;
+
+        return new Vertex( (float)x, (float)y );
+    }
+
+
     public String ContactData(double p1_x, double p1_y, double p2_x, double p2_y){
 
         //F = float(double로 후에 변경), increase, constant, sameValue;

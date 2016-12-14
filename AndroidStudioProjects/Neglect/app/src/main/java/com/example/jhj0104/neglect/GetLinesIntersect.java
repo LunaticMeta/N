@@ -1,7 +1,6 @@
 package com.example.jhj0104.neglect;
 
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -12,7 +11,6 @@ import android.widget.TextView;
  */
 public class GetLinesIntersect extends AppCompatActivity {
 
-    DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
     float LineLength = 1700f;
     float Width = 1920;
     float centerY = 540;
@@ -81,7 +79,7 @@ public class GetLinesIntersect extends AppCompatActivity {
     //교점의 오차 출력
     public String ErrorSize(double x){
 
-        float DPI = dm.densityDpi;
+        float DPI = 560;
 
         double err_pixel = Math.abs(centerX-x);
         double err_mm = (err_pixel*2.54)/DPI*10;

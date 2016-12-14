@@ -17,7 +17,7 @@ public class FileName {
         Calendar calendar = Calendar.getInstance();
         java.util.Date date = calendar.getTime();
         this.Date= (new SimpleDateFormat("yyyyMMdd").format(date));
-        this.Time = (new SimpleDateFormat("HH:mm:ss").format(date));
+        this.Time = (new SimpleDateFormat("HHmmss").format(date));
         this.fileName = Date+"_"+Time;
     }
 }
