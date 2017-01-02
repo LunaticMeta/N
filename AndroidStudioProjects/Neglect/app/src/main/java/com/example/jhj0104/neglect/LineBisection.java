@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,16 +13,15 @@ import com.example.jhj0104.neglect.common.MyLine;
 import com.example.jhj0104.neglect.common.MyLineSet;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import static android.R.attr.centerX;
 import static com.example.jhj0104.neglect.DrawView.lineSetsStatic;
 import static com.example.jhj0104.neglect.FileName.fileName;
 
 public class LineBisection extends AppCompatActivity {
-
-    DisplayMetrics metrics = new DisplayMetrics();
 
     float LineLength = 1700f;
     float centerY = 540;
@@ -32,6 +30,8 @@ public class LineBisection extends AppCompatActivity {
     float[] X = {LineMargin,(LineMargin+LineLength)};
     float[] Y = {centerY,centerY};
 
+    int loopNum;
+    boolean isPractice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,8 @@ public class LineBisection extends AppCompatActivity {
         Loop loop = (Loop) intent.getSerializableExtra("LoopData");
         int loopNum = loop.loopNum;
         boolean isPractice = loop.Practice;
+        this.loopNum = loopNum;
+        this.isPractice = isPractice;
 
         if(isPractice==true){
             Toast.makeText(getApplicationContext(), "연습 테스트입니다. "+(3-loopNum)+"회 남음.", Toast.LENGTH_SHORT).show();
@@ -64,97 +66,73 @@ public class LineBisection extends AppCompatActivity {
     }
 
     public void onClick_goNext (View view) throws IOException {
+        //마지막에서 loop에서 파일 입력
+        if(isPractice == false) {
 
-        File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, "my/ans.txt");
-        StringBuilder text = new StringBuilder();
+            String state = Environment.getExternalStorageState(); //외부저장소(SDcard) 상태 얻어오기
+            File path, path_result; //저장 데이터가 존재하는 디렉토리경로
+            File file, file_result;
 
-
-
-        final String FILE_NAME = fileName;
-        final String FILE_NAME_result = fileName+"_result";
-
-        FileOutputStream reportWriter = null;
-        FileOutputStream reportWriter_result = null;
-        reportWriter = getApplicationContext().openFileOutput(FILE_NAME, MODE_PRIVATE);
-        reportWriter_result = getApplicationContext().openFileOutput(FILE_NAME_result, MODE_PRIVATE);
-
-        Environment.getExternalStorageDirectory().getAbsolutePath();
-
-
-        boolean isContact = false;
-
-        for (int i = 0; i < lineSetsStatic.size(); i++) {
-            MyLineSet set = lineSetsStatic.get(i);
-            for( int j = 0; j < set.getLines().size(); ++ j) {
-                MyLine l = set.getLines().get(j);
-
-                double StartX = l.getStartPt().getX();
-                double StartY = l.getStartPt().getY();
-                double EndX = l.getEndPt().getX();
-                double EndY = l.getEndPt().getY();
-
-                //ADD
-                String myTestMode = "LineBisection, ";
-                reportWriter.write(myTestMode.getBytes());
-                reportWriter.write((Double.toString(StartX)+", ").getBytes());
-                reportWriter.write((Double.toString(StartY)+", ").getBytes());
-                reportWriter.write((Double.toString(EndX)+", ").getBytes());
-                reportWriter.write((Double.toString(EndY)+";\n").getBytes());
-
-                if(isContact == false){
-                    isContact = isContacted(StartX, StartY, EndX, EndY);
-
-                    if(isContact == true){
-                        String answer = ContactData(StartX, StartY, EndX, EndY);
-                        reportWriter_result.write((answer+"\n").getBytes());
-                    }
-/*
-                    Vertex intersectedPoint = isContacted_1( StartX, StartY, EndX, EndY );
-                    if( intersectedPoint != null ){
-                        reportWriter_result.write( (intersectedPoint.toString()
-                                + ErrorSize( intersectedPoint.getX() ) + "\n").getBytes() );
-                    }
-                    */
-                }
+            if (!state.equals(Environment.MEDIA_MOUNTED)) {
+                Toast.makeText(this, "SDcard Not Mounted", Toast.LENGTH_SHORT).show();
+                return;
             }
-            reportWriter.write("\n".getBytes());
-            isContact = false;
-        }
-        reportWriter.close();
-        reportWriter_result.close();
 
-        //Toast.makeText(getApplicationContext(), "라인 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
-        //Intent intent = new Intent(getApplicationContext(),LineDecision.class);
-        //startActivity(intent);
+            String absolutePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            path = new File((absolutePath + "/custDir"));
+            path_result = new File((absolutePath + "/custDir"));
+
+            file = new File(path, fileName + ".csv");
+            file_result = new File(path_result, fileName + "_result.csv");
+
+            try {
+                FileWriter wr = new FileWriter(file, true);
+                FileWriter wr_result = new FileWriter(file_result, true);
+                PrintWriter writer = new PrintWriter(wr);
+                PrintWriter writer_result = new PrintWriter(wr_result);
+
+                boolean isContact = false;
+
+                    MyLineSet set = lineSetsStatic.get(loopNum-1);
+                    for (int j = 0; j < set.getLines().size(); ++j) {
+                        MyLine l = set.getLines().get(j);
+
+                        double StartX = l.getStartPt().getX();
+                        double StartY = l.getStartPt().getY();
+                        double EndX = l.getEndPt().getX();
+                        double EndY = l.getEndPt().getY();
+                        String myTestMode = "LineBisection";
+                        String load = myTestMode + "," + loopNum + "," + StartX + "," + StartY + "," + EndX + "," + EndY + ",";
+
+                        if (isContact == false) {
+                            isContact = isContacted(StartX, StartY, EndX, EndY);
+
+                            if (isContact == true) {
+                                String answer = ContactData(StartX, StartY, EndX, EndY);
+                                writer_result.println(answer);
+                            }
+                        }
+                        writer.println(load);
+                    }
+                    isContact = false;
+
+                writer.close();
+                writer_result.close();
+
+
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        //실제 테스트 시 막는다.
-        //super.onBackPressed();
+        //실제 테스트 시 block
+        super.onBackPressed();
     }
-    /* Checks if external storage is available for read and write */
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-    /* Checks if external storage is available to at least read */
-    public boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-
 
     public boolean isContacted(double p1_x, double p1_y, double p2_x, double p2_y){
         //F = float(double로 후에 변경), increase, constant, sameValue;

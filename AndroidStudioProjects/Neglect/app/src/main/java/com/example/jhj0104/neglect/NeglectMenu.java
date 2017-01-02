@@ -15,6 +15,7 @@ public class NeglectMenu extends AppCompatActivity {
     public void onClick_startTest (View view){
         Loop loop;
         new FileName();
+
         for(int i=10;i>0;i--){ //TEST
             loop = new Loop("LineBisection", false, i);
 

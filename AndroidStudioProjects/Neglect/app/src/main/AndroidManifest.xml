@@ -14,7 +14,10 @@
 
         <activity android:name=".NeglectCover"
             android:screenOrientation = "landscape">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -26,18 +29,12 @@
             android:name=".LineBisection"
             android:screenOrientation = "landscape">
         </activity>
-        <activity android:name=".LineDecision"
-            android:screenOrientation = "landscape">
-        </activity>
         <activity android:name=".GetLinesIntersect"
             android:screenOrientation = "landscape">
 
         </activity>
         <activity android:name=".SaveTxt">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
 

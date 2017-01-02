@@ -15,7 +15,6 @@ public class NeglectCover extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cover);
     }
-
     public void onClick_coverLayout(View view){
         Intent intent = new Intent(getApplicationContext(),NeglectMenu.class);
         startActivity(intent);

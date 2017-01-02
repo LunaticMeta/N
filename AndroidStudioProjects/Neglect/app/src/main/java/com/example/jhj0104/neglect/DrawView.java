@@ -41,7 +41,7 @@ public class DrawView extends View {
     private float LineMargin;
     private float centerY;
 
-    public DrawView(Context context, AttributeSet attrSet ){
+    public DrawView(Context context, AttributeSet attrSet){
         super(context, attrSet);
         init(context);
     }
@@ -94,13 +94,7 @@ public class DrawView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-//               if(isPractice == false){
-//                    DInfoType.add("LineBisection");
-//                    DRepeat.add(Integer.toString(repeatNum));
-//                }
-
                 float[] point_down = {event.getX(), event.getY()};
-                //arVertex.add(new Vertex(point_down[0], point_down[1], false));
 
                     // gtlee code
                     bPressed = true;
@@ -110,24 +104,9 @@ public class DrawView extends View {
                     prevVtx = new  Vertex( point_down[0], point_down[1], true);
                     // end of gtlee code
 
-                if(isPractice == false){
-//                    DMode.add("1");
-//                    DlastedX.add(Float.toString(point_down[0]));
-//                    DlastedY.add(Float.toString(point_down[1]));
-//                    DX.add(Float.toString(point_down[0]));
-//                    DY.add(Float.toString(point_down[1]));
-                }
-
                 break;
             case MotionEvent.ACTION_MOVE:
-//                if(isPractice == false){
-//                    DInfoType.add("LineBisection");
-//                    DRepeat.add(Integer.toString(repeatNum));
-//                }
-
                 float[] point_move = {event.getX(), event.getY()};
-                //arVertex.add(new Vertex(point_move[0], point_move[1], false));
-
                 // gtlee code
                 if( bPressed ) {
                     Vertex curVtx = new Vertex( point_move[0], point_move[1] );
@@ -137,29 +116,21 @@ public class DrawView extends View {
                 }
                 // end of gtlee code
                 invalidate();
-
-//                if(isPractice == false) {
-//                    DMode.add("2");
-//                    DlastedX.add(Float.toString(lastX));
-//                    DlastedY.add(Float.toString(lastY));
-//                    DX.add(Float.toString(point_move[0]));
-//                    DY.add(Float.toString(point_move[1]));
-//                }
-
                 lastX = point_move[0];
                 lastY = point_move[1];
 
                 break;
+
             case MotionEvent.ACTION_UP:
+
                 Button goNext = (Button) getRootView().findViewById(R.id.btn_goNext);
                 goNext.setVisibility(VISIBLE);
 
                 // gtlee code
                 bPressed = false;
-                prevVtx.set( event.getX(), event.getY() );
+                prevVtx.set( event.getX(), event.getY());
                 System.out.println("up");
                 // end of gtlee code
-
                 break;
         }
         // onDraw() 호출
@@ -178,27 +149,6 @@ public class DrawView extends View {
         super.onDraw(canvas);
         canvas.drawColor(Color.WHITE);
         canvas.drawLine(LineMargin, centerY, Width-LineMargin, centerY, paint);
-
-        /*
-        for (int i = 0; i < arVertex.size(); i++) {
-            if (arVertex.get(i).draw) {
-                canvas.drawLine(arVertex.get(i-1).x, arVertex.get(i-1).y, arVertex.get(i).x, arVertex.get(i).y, mPaint);
-            } else {
-                float[] point = {nowX, nowY};
-                canvas.drawPoint(point[0], point[1], mPaint);
-            }
-        }
-        */
-
-//        int lastNum = lineSets.size();
-//        if(lastNum >0) {
-//            MyLineSet set = lineSets.get(lastNum - 1);
-//            for (int j = 0; j < set.getLines().size(); ++j) {
-//                MyLine l = set.getLines().get(j);
-//                canvas.drawLine(l.getStartPt().getX(), l.getStartPt().getY(), l.getEndPt().getX(), l.getEndPt().getY(), mPaint);
-//            }
-//        }
-
 
         // gtlee code
         for (int i = 0; i < lineSets.size(); i++) {
