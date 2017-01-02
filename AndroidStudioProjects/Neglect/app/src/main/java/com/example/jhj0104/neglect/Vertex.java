@@ -27,10 +27,6 @@ public class Vertex {
         return x;
     }
 
-    public void setX(float x) {
-        this.x = x;
-    }
-
     public void set( float x, float y ){
         this.x = x;
         this.y = y;

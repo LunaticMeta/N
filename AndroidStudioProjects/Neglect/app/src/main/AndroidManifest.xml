@@ -29,13 +29,6 @@
             android:name=".LineBisection"
             android:screenOrientation = "landscape">
         </activity>
-        <activity android:name=".GetLinesIntersect"
-            android:screenOrientation = "landscape">
-
-        </activity>
-        <activity android:name=".SaveTxt">
-
-        </activity>
 
 
     </application>

@@ -65,12 +65,13 @@ public class LineBisection extends AppCompatActivity {
         }
     }
 
+    //  참고: http://kitesoft.tistory.com/45
     public void onClick_goNext (View view) throws IOException {
         //마지막에서 loop에서 파일 입력
         if(isPractice == false) {
 
-            String state = Environment.getExternalStorageState(); //외부저장소(SDcard) 상태 얻어오기
-            File path, path_result; //저장 데이터가 존재하는 디렉토리경로
+            String state = Environment.getExternalStorageState();
+            File path, path_result;
             File file, file_result;
 
             if (!state.equals(Environment.MEDIA_MOUNTED)) {
@@ -93,32 +94,30 @@ public class LineBisection extends AppCompatActivity {
 
                 boolean isContact = false;
 
-                    MyLineSet set = lineSetsStatic.get(loopNum-1);
-                    for (int j = 0; j < set.getLines().size(); ++j) {
-                        MyLine l = set.getLines().get(j);
+                MyLineSet set = lineSetsStatic.get(loopNum-1);
+                for (int j = 0; j < set.getLines().size(); ++j) {
+                    MyLine l = set.getLines().get(j);
 
-                        double StartX = l.getStartPt().getX();
-                        double StartY = l.getStartPt().getY();
-                        double EndX = l.getEndPt().getX();
-                        double EndY = l.getEndPt().getY();
-                        String myTestMode = "LineBisection";
-                        String load = myTestMode + "," + loopNum + "," + StartX + "," + StartY + "," + EndX + "," + EndY + ",";
+                    double StartX = l.getStartPt().getX();
+                    double StartY = l.getStartPt().getY();
+                    double EndX = l.getEndPt().getX();
+                    double EndY = l.getEndPt().getY();
+                    String myTestMode = "LineBisection";
+                    String load = myTestMode + "," + loopNum + "," + StartX + "," + StartY + "," + EndX + "," + EndY + ",";
 
-                        if (isContact == false) {
-                            isContact = isContacted(StartX, StartY, EndX, EndY);
+                    if (isContact == false) {
+                        isContact = isContacted(StartX, StartY, EndX, EndY);
 
-                            if (isContact == true) {
-                                String answer = ContactData(StartX, StartY, EndX, EndY);
-                                writer_result.println(answer);
-                            }
+                        if (isContact == true) {
+                            String answer = ContactData(StartX, StartY, EndX, EndY);
+                            writer_result.println(answer);
                         }
-                        writer.println(load);
                     }
-                    isContact = false;
+                    writer.println(load);
+                }
 
                 writer.close();
                 writer_result.close();
-
 
             } catch (IOException e) {
                 // TODO Auto-generated catch block

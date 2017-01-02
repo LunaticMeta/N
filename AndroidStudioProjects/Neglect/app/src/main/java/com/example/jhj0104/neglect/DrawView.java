@@ -24,14 +24,13 @@ import java.util.List;
  */
 
 //http://androiddeveloper.tistory.com/43
+
 public class DrawView extends View {
 
     Intent intent = ((Activity) getContext()).getIntent();
     Loop loop = (Loop) intent.getSerializableExtra("LoopData");
-    int repeatNum = loop.loopNum;
-    boolean isPractice = loop.Practice;
 
-    float nowX, nowY, lastX, lastY;
+    float lastX, lastY;
     Paint mPaint;
     List<Vertex> arVertex;
 
@@ -118,7 +117,6 @@ public class DrawView extends View {
                 invalidate();
                 lastX = point_move[0];
                 lastY = point_move[1];
-
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -137,13 +135,12 @@ public class DrawView extends View {
         return true;
     }
 
-    /** 화면을 계속 그려주는 함수 */
     @Override
     protected void onDraw(Canvas canvas) {
 
         Paint paint = new Paint();
         paint.clearShadowLayer();
-        canvas.drawColor(Color.WHITE); // 배경색상
+        canvas.drawColor(Color.WHITE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5f);
         super.onDraw(canvas);
