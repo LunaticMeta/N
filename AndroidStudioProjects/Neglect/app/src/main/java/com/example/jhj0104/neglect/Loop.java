@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Created by jhj0104 on 2016-12-08.
  */
 
+//http://bitsoul.tistory.com/117
 public class Loop implements Serializable {
     public String Name;
     public boolean Practice;

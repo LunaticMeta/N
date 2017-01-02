@@ -24,11 +24,11 @@ public class LineDecision extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_decision);
 
-
         memo = (TextView) findViewById(R.id.memoMemo);
         memo.setText(myInfo_str);
         memo.setMovementMethod(new ScrollingMovementMethod());
     }
+
 
     public LineDecision() throws FileNotFoundException {
 

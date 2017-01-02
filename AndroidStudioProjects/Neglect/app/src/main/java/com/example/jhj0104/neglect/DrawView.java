@@ -26,7 +26,6 @@ import java.util.List;
 //http://androiddeveloper.tistory.com/43
 public class DrawView extends View {
 
-
     Intent intent = ((Activity) getContext()).getIntent();
     Loop loop = (Loop) intent.getSerializableExtra("LoopData");
     int repeatNum = loop.loopNum;
@@ -211,6 +210,4 @@ public class DrawView extends View {
         }
         // end of gtlee code
     }
-
-
 }

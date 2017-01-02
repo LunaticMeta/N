@@ -1,5 +1,6 @@
 package com.example.jhj0104.neglect;
 
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -9,6 +10,7 @@ import android.widget.TextView;
  * Created by jhj0104 on 2016-12-12.
  * point 사용하세요 point_2 안됨.... ㅡㅡ;;
  */
+
 public class GetLinesIntersect extends AppCompatActivity {
 
     float LineLength = 1700f;
@@ -21,6 +23,11 @@ public class GetLinesIntersect extends AppCompatActivity {
     float[] y = {0f,0f};
     float[] X = {LineMargin,(LineMargin+LineLength)};
     float[] Y = {centerY,centerY};
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.test_decision);
+    }
 
     public void onClick_submitXY (View view){
         EditText xx1 = (EditText) findViewById(R.id.xx1);

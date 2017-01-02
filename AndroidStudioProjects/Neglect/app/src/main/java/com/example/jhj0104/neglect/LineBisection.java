@@ -124,16 +124,16 @@ public class LineBisection extends AppCompatActivity {
         reportWriter.close();
         reportWriter_result.close();
 
-        Toast.makeText(getApplicationContext(), "라인 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getApplicationContext(),LineDecision.class);
-        startActivity(intent);
+        //Toast.makeText(getApplicationContext(), "라인 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
+        //Intent intent = new Intent(getApplicationContext(),LineDecision.class);
+        //startActivity(intent);
         finish();
     }
 
     @Override
     public void onBackPressed() {
         //실제 테스트 시 막는다.
-        super.onBackPressed();
+        //super.onBackPressed();
     }
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
