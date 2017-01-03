@@ -13,6 +13,11 @@ public class Loop implements Serializable {
     public boolean Practice;
     public int loopNum;
 
+    public Loop(String Name, boolean Practice){
+        this.Name = Name;
+        this.Practice = Practice;
+        this.loopNum = 1;
+    }
     public Loop(String Name, boolean Practice, int loopNum) {
         this.Name = Name;
         this.Practice = Practice;

@@ -14,21 +14,15 @@ public class NeglectMenu extends AppCompatActivity {
     }
     public void onClick_startTest (View view){
         Loop loop;
+        Intent intent;
         new FileName();
 
-        for(int i=10;i>0;i--){ //TEST
-            loop = new Loop("LineBisection", false, i);
-            Intent intent = new Intent(getApplicationContext(),LineBisection.class);
-            intent.putExtra("LoopData", loop);
-            startActivity(intent);
-        }
-        for(int i=2; i>0; i--){ //practice
-            loop = new Loop("LineBisection", true, i);
+        //--------------- ↓↓ 실선이등분 검사 Start ↓↓ ---------------//
+        loop = new Loop("LineBisection", true);
+        intent = new Intent(getApplicationContext(),LineBisection.class);
+        intent.putExtra("LoopData", loop);
+        startActivity(intent);
 
-            Intent intent = new Intent(getApplicationContext(),LineBisection.class);
-            intent.putExtra("LoopData", loop);
-            startActivity(intent);
-        }
     }
     public void onClick_startExperiment (View view){
         return;

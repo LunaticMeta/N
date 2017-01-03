@@ -1,8 +1,6 @@
 package com.example.jhj0104.neglect;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
@@ -27,9 +25,6 @@ import java.util.List;
 
 public class DrawView extends View {
 
-    Intent intent = ((Activity) getContext()).getIntent();
-    Loop loop = (Loop) intent.getSerializableExtra("LoopData");
-
     float lastX, lastY;
     Paint mPaint;
     List<Vertex> arVertex;
@@ -48,7 +43,6 @@ public class DrawView extends View {
         super(context);
         init(context);
     }
-
     private void init(Context context) {
 
         arVertex = new ArrayList<>();
@@ -63,9 +57,8 @@ public class DrawView extends View {
         if (MaxCm >= 18) LinePixel = (densityDpi * 18f) / 2.54f;
         else LinePixel = (densityDpi * ((float) MaxCm - 1f)) / 2.54f;
 
-        //오차 보정
-        LinePixel *= 0.833f;
 
+        LinePixel *= 0.833f; //오차 보정(임의로 계산한 값)
         LineMargin = (Width - LinePixel) / 2f;
 
         mPaint = new Paint();
@@ -137,9 +130,9 @@ public class DrawView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         Paint paint = new Paint();
         paint.clearShadowLayer();
+
         canvas.drawColor(Color.WHITE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5f);

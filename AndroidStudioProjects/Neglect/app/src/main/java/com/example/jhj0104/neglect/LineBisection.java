@@ -45,23 +45,21 @@ public class LineBisection extends AppCompatActivity {
         this.loopNum = loopNum;
         this.isPractice = isPractice;
 
+        Button goNext = (Button) findViewById(R.id.btn_goNext);
+        TextView practicing = (TextView) findViewById(R.id.practicing);
+
+        //Set toast & btn
         if(isPractice==true){
-            Toast.makeText(getApplicationContext(), "연습 테스트입니다. "+(3-loopNum)+"회 남음.", Toast.LENGTH_SHORT).show();
-            if(loopNum==2){
-                Button goNext = (Button) findViewById(R.id.btn_goNext);
-                goNext.setText("테스트 시작");
-            }
+            Toast.makeText(getApplicationContext(), "연습 테스트입니다. "+(3-loopNum)+"번 남았습니다.", Toast.LENGTH_SHORT).show();
+            if(loopNum==2) goNext.setText("테스트 시작");
         }
         else{
-            if(loopNum!=10)Toast.makeText(getApplicationContext(), "테스트가 "+(11-loopNum)+"번 남았습니다", Toast.LENGTH_SHORT).show();
+            practicing.setVisibility(View.INVISIBLE);
+            if(loopNum!=10) Toast.makeText(getApplicationContext(), "테스트가 "+(11-loopNum)+"번 남았습니다", Toast.LENGTH_SHORT).show();
             else {
                 Toast.makeText(getApplicationContext(), "마지막 테스트 입니다", Toast.LENGTH_SHORT).show();
-                Button goNext = (Button) findViewById(R.id.btn_goNext);
                 goNext.setText("검사 완료");
             }
-
-            TextView practicing = (TextView) findViewById(R.id.practicing);
-            practicing.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -80,6 +78,7 @@ public class LineBisection extends AppCompatActivity {
             }
 
             String absolutePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
             path = new File((absolutePath + "/custDir"));
             path_result = new File((absolutePath + "/custDir"));
 
@@ -94,7 +93,7 @@ public class LineBisection extends AppCompatActivity {
 
                 boolean isContact = false;
 
-                MyLineSet set = lineSetsStatic.get(loopNum-1);
+                MyLineSet set = lineSetsStatic.get(0);
                 for (int j = 0; j < set.getLines().size(); ++j) {
                     MyLine l = set.getLines().get(j);
 
@@ -107,7 +106,6 @@ public class LineBisection extends AppCompatActivity {
 
                     if (isContact == false) {
                         isContact = isContacted(StartX, StartY, EndX, EndY);
-
                         if (isContact == true) {
                             String answer = ContactData(StartX, StartY, EndX, EndY);
                             writer_result.println(answer);
@@ -116,6 +114,7 @@ public class LineBisection extends AppCompatActivity {
                     writer.println(load);
                 }
 
+                lineSetsStatic.clear();
                 writer.close();
                 writer_result.close();
 
@@ -123,6 +122,20 @@ public class LineBisection extends AppCompatActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+        }
+
+
+        //call next test
+        if((isPractice == true && loopNum <= 2) || (isPractice == false && loopNum < 10)){
+            Loop loop;
+            if(isPractice == true && loopNum == 2)
+                loop = new Loop("LineBisection", false,1);
+            else
+                loop = new Loop("LineBisection", isPractice,loopNum+1);
+
+            Intent intent = new Intent(getApplicationContext(),LineBisection.class);
+            intent.putExtra("LoopData", loop);
+            startActivity(intent);
         }
         finish();
     }
