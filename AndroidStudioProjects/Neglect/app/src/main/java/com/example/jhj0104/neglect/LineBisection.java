@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,23 +18,28 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
-import static com.example.jhj0104.neglect.DrawView.lineSetsStatic;
 import static com.example.jhj0104.neglect.FileName.fileName;
+
+//import static com.example.jhj0104.neglect.DrawView.lineSetsStatic;
 
 public class LineBisection extends AppCompatActivity {
     int loopNum;
     boolean isPractice;
+    boolean isContact;
 
     private float Width;
     private float Height;
     private float LinePixel;
     private float LineMargin;
     private float centerX, centerY;
-    float[] X = {LineMargin,(LineMargin+LinePixel)};
-    float[] Y = {centerY,centerY};
-
+    float[] X = {LineMargin, (LineMargin + LinePixel)};
+    float[] Y = {centerY, centerY};
     long startTime, endTime, runTime;
+
+    File path, path_result;
+    File file, file_result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,51 +71,63 @@ public class LineBisection extends AppCompatActivity {
         LineMargin = (Width - LinePixel) / 2f;
 
         this.X[0] = LineMargin;
-        this.X[1] = (LineMargin+LinePixel);
+        this.X[1] = (LineMargin + LinePixel);
         this.Y[0] = centerY;
         this.Y[1] = centerY;
 
         //Set toast & btn
-        if(isPractice==true){
-            Toast.makeText(getApplicationContext(), "연습 테스트입니다. "+(3-loopNum)+"번 남았습니다.", Toast.LENGTH_SHORT).show();
-            if(loopNum==2) goNext.setText("테스트 시작");
-        }
-        else{
+        if (isPractice) {
+            Toast.makeText(getApplicationContext(), "연습 테스트입니다. " + (3 - loopNum) + "번 남았습니다.", Toast.LENGTH_SHORT).show();
+            if (loopNum == 2) goNext.setText("테스트 시작");
+        } else {
             practicing.setVisibility(View.INVISIBLE);
-            if(loopNum!=10) Toast.makeText(getApplicationContext(), "테스트가 "+(11-loopNum)+"번 남았습니다", Toast.LENGTH_SHORT).show();
+            if (loopNum != 10)
+                Toast.makeText(getApplicationContext(), "테스트가 " + (11 - loopNum) + "번 남았습니다", Toast.LENGTH_SHORT).show();
             else {
                 Toast.makeText(getApplicationContext(), "마지막 테스트 입니다", Toast.LENGTH_SHORT).show();
                 goNext.setText("검사 완료");
             }
         }
 
-        startTime = System.currentTimeMillis();
+        runTime = checkTime('s');
     }
 
+
     //  data save in sd carc 참고: http://kitesoft.tistory.com/45
-    public void onClick_goNext (View view) throws IOException {
-        endTime = System.currentTimeMillis();
-        runTime = (endTime - startTime)/1000; //(1000은 단위변환 milliseconds -> seconds)
+    public void onClick_goNext(View view) throws IOException {
+        double StartX, StartY, EndX, EndY;
+        runTime = checkTime('f');
 
-        //마지막에서 loop에서 파일 입력
-        if(isPractice == false) {
+        DrawView drawView = (DrawView) findViewById(R.id.view);
+        List<MyLineSet> lineSetsStatic = drawView.getLineSets();
 
+        if (!isPractice) {
             String state = Environment.getExternalStorageState();
-            File path, path_result;
-            File file, file_result;
-
             if (!state.equals(Environment.MEDIA_MOUNTED)) {
                 Toast.makeText(this, "SDcard Not Mounted", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             String absolutePath = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-            path = new File((absolutePath + "/custDir"));
-            path_result = new File((absolutePath + "/custDir"));
+            String foldername = "HelloWorld";
+            File dir = new File(Environment.getExternalStorageDirectory() + "/" + foldername);
+            if (dir.exists() && dir.isDirectory()) {
+                Log.d("log", "exists");
+            } else {
+                //noinspection ResultOfMethodCallIgnored
+                dir.mkdirs();
+                Log.d("log", "created");
+            }
+
+            path = new File(getExternalCacheDir(), "NewDirectory");
+//            path = new File((absolutePath+"/Neglect"));
+//            if (!path.exists()) {
+//                path.mkdirs();
+//                Toast.makeText(getApplicationContext(), "create new folder", Toast.LENGTH_SHORT).show();
+//            }
 
             file = new File(path, fileName + ".csv");
-            file_result = new File(path_result, fileName + "_result.csv");
+            file_result = new File(path, fileName + "_result.csv");
 
             try {
                 FileWriter wr = new FileWriter(file, true);
@@ -117,34 +135,36 @@ public class LineBisection extends AppCompatActivity {
                 PrintWriter writer = new PrintWriter(wr);
                 PrintWriter writer_result = new PrintWriter(wr_result);
 
+                isContact = false;
 
-
-                boolean isContact = false;
-
-                for(int i=0; i<lineSetsStatic.size(); i++){
+                for (int i = 0; i < lineSetsStatic.size(); i++) {
                     MyLineSet set = lineSetsStatic.get(i);
-                    int count=0;
 
                     for (int j = 0; j < set.getLines().size(); ++j) {
-                        count++;
+
                         MyLine l = set.getLines().get(j);
-
-                        double StartX = l.getStartPt().getX();
-                        double StartY = l.getStartPt().getY();
-                        double EndX = l.getEndPt().getX();
-                        double EndY = l.getEndPt().getY();
+                        StartX = l.getStartPt().getX();
+                        StartY = l.getStartPt().getY();
+                        EndX = l.getEndPt().getX();
+                        EndY = l.getEndPt().getY();
                         String myTestMode = "LineBisection";
-                        String load = myTestMode + "," + loopNum + "," + StartX + "," + StartY + "," + EndX + "," + EndY + ",";
 
-                        if(isContact == false){
+                        if (i == 0 && j == 0 && loopNum == 1) {
+                            writer.println("TestName, " + "TestNum, " + "startX, " + "startY, " + "endX, " + "endY");
+                            writer_result.println("TestName, " + "TestNum, " + "X, " + "Y, " + "err_pixel, " + "err_mm, " + "err_per, " + "runTime");
+                        }
+
+                        if (!isContact) {
                             String xy = calculator(StartX, StartY, EndX, EndY);
-                            if(xy!=null){
-                                String answer = "LineBisection, "+ loopNum + "," +count +", "+ xy +", "+runTime;
+                            if (xy != null) {
+                                String answer = "LineBisection, " + loopNum + "," + xy + ", " + runTime;
                                 writer_result.println(answer);
                                 isContact = true;
                             }
                         }
-                        writer.println(load);
+                        writer.println(myTestMode + "," + loopNum + "," + StartX + "," + StartY + "," + EndX + "," + EndY);
+                        if (i == lineSetsStatic.size() - 1 && j == set.getLines().size() - 1 && !isContact)
+                            writer_result.println(myTestMode + ", " + loopNum + "," + "fail");
                     }
                 }
                 lineSetsStatic.clear();
@@ -157,14 +177,13 @@ public class LineBisection extends AppCompatActivity {
             }
         }
 
-        //call next test intent
-        if((isPractice == true && loopNum <= 2) || (isPractice == false && loopNum < 10)){
+        if ((isPractice && loopNum <= 2) || (!isPractice && loopNum < 10)) {
             Loop loop;
 
-            if(isPractice == true && loopNum == 2) loop = new Loop("LineBisection", false,1);
-            else loop = new Loop("LineBisection", isPractice,loopNum+1);
+            if (isPractice && loopNum == 2) loop = new Loop("LineBisection", false, 1);
+            else loop = new Loop("LineBisection", isPractice, loopNum + 1);
 
-            Intent intent = new Intent(getApplicationContext(),LineBisection.class);
+            Intent intent = new Intent(getApplicationContext(), LineBisection.class);
             intent.putExtra("LoopData", loop);
             startActivity(intent);
         }
@@ -176,11 +195,11 @@ public class LineBisection extends AppCompatActivity {
         //실제 테스트 시 block
         super.onBackPressed();
     }
+
     public String calculator(double p1_x, double p1_y, double p2_x, double p2_y) {
         double x, y;
         double tmp;
 
-        if (p1_y == p2_y) return null;
         if (p1_y > p2_y) {
             tmp = p1_y;
             p1_y = p2_y;
@@ -191,39 +210,42 @@ public class LineBisection extends AppCompatActivity {
             p1_x = p2_x;
             p2_x = tmp;
         }
-        if(p1_y <= centerY && centerY <= p2_y){}
-        else return null;
+        if (p1_y <= centerY && centerY <= p2_y) {
+        } else return null;
 
-        double a = Math.abs(p1_y-centerY);
-        double b = Math.abs(p2_y-centerY);
+        double a = Math.abs(p1_y - centerY);
+        double b = Math.abs(p2_y - centerY);
         double xx = Math.abs(p2_x - p1_x);
 
-        x = p1_x + (xx*(a/(a+b)));
+        x = p1_x + (xx * (a / (a + b)));
         y = centerY;
 
-        if(x < LineMargin || x> (Width-LineMargin)) return null;
+        if (x < LineMargin || x > (Width - LineMargin)) return null;
 
-        return (x+", "+y+"," + ErrorData(x));
+        return (x + ", " + y + "," + ErrorData(x));
     }
-    //교점의 오차 출력
-    public String ErrorData(double x){
+
+    public String ErrorData(double x) {
 
         //float DPI = dm.densityDpi;
         float DPI = 560;
-        double err_pixel = Math.abs(centerX-x);
-        double err_mm = (err_pixel*2.54)/DPI*10;
-        double err_per = (err_pixel/(Width-LineMargin))*100;
-
-        /*
-        String a = String.format("%.1f", err_pixel)+"pixel";
-        String b = String.format("%.1f", err_mm)+"mm";
-        String c = String.format("%.1f", err_per)+"%";
-        String result = "Error pixel : "+a+"\nError mm : "+b+"\nError per : "+c;
-        */
-        String result = err_pixel+", "+err_mm+", "+err_per+",";
-
-        // +환산점수
+        double err_pixel = Math.abs(centerX - x);
+        double err_mm = (err_pixel * 2.54) / DPI * 10;
+        double err_per = (err_pixel / (Width - LineMargin)) * 100;
+        String result = err_pixel + ", " + err_mm + ", " + err_per;
+        // add 환산점수
 
         return result;
+    }
+
+    public long checkTime(char mode) {
+        if (mode == 's') {
+            startTime = System.currentTimeMillis();
+            runTime = 0;
+        } else {
+            endTime = System.currentTimeMillis();
+            runTime = (long) ((endTime - startTime) * 0.001); //(mul 0.001 change milliseconds to seconds)
+        }
+        return runTime;
     }
 }

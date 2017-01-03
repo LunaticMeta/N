@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 //http://androiddeveloper.tistory.com/43
-
+    // help by gtlee
 public class DrawView extends View {
 
     float lastX, lastY;
@@ -34,6 +34,19 @@ public class DrawView extends View {
     private float LinePixel;
     private float LineMargin;
     private float centerY;
+
+    // gtlee code
+    private boolean bPressed = false;
+    private Vertex prevVtx = new Vertex(0,0);
+    private MyLineSet set;
+    public List<MyLineSet> lineSets = new ArrayList<>();
+    private List<MyLineSet> lineSetsStatic = new ArrayList<>();
+    // end of gtlee code
+
+
+    public List<MyLineSet> getLineSets(){
+        return lineSetsStatic;
+    }
 
     public DrawView(Context context, AttributeSet attrSet){
         super(context, attrSet);
@@ -71,15 +84,6 @@ public class DrawView extends View {
         mPaint.setAntiAlias(true);
     }
 
-    /** 터치이벤트를 받는 함수 */
-
-    // gtlee code
-    private boolean bPressed = false;
-    private Vertex prevVtx = new Vertex(0,0);
-    private MyLineSet set;
-    public List<MyLineSet> lineSets = new ArrayList<>();
-    public static List<MyLineSet> lineSetsStatic = new ArrayList<>();
-    // end of gtlee code
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -90,7 +94,7 @@ public class DrawView extends View {
                     // gtlee code
                     bPressed = true;
                     set = new MyLineSet();
-                    lineSets.add( set );
+                    lineSets.add(set);
                     lineSetsStatic.add(set);
                     prevVtx = new  Vertex( point_down[0], point_down[1], true);
                     // end of gtlee code
@@ -98,6 +102,7 @@ public class DrawView extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 float[] point_move = {event.getX(), event.getY()};
+
                 // gtlee code
                 if( bPressed ) {
                     Vertex curVtx = new Vertex( point_move[0], point_move[1] );
@@ -106,6 +111,7 @@ public class DrawView extends View {
                     System.out.println("move : " + prevVtx + " - " + curVtx );
                 }
                 // end of gtlee code
+
                 invalidate();
                 lastX = point_move[0];
                 lastY = point_move[1];
@@ -115,15 +121,13 @@ public class DrawView extends View {
 
                 Button goNext = (Button) getRootView().findViewById(R.id.btn_goNext);
                 goNext.setVisibility(VISIBLE);
-
                 // gtlee code
-                bPressed = false;
                 prevVtx.set( event.getX(), event.getY());
                 System.out.println("up");
+                bPressed = false;
                 // end of gtlee code
                 break;
         }
-        // onDraw() 호출
         return true;
     }
 
