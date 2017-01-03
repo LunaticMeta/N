@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,21 +18,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static android.R.attr.centerX;
 import static com.example.jhj0104.neglect.DrawView.lineSetsStatic;
 import static com.example.jhj0104.neglect.FileName.fileName;
 
 public class LineBisection extends AppCompatActivity {
-
-    float LineLength = 1700f;
-    float centerY = 540;
-    float LineMargin = 251.6f;
-
-    float[] X = {LineMargin,(LineMargin+LineLength)};
-    float[] Y = {centerY,centerY};
-
     int loopNum;
     boolean isPractice;
+
+    private float Width;
+    private float Height;
+    private float LinePixel;
+    private float LineMargin;
+    private float centerX, centerY;
+    float[] X = {LineMargin,(LineMargin+LinePixel)};
+    float[] Y = {centerY,centerY};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,25 @@ public class LineBisection extends AppCompatActivity {
         Button goNext = (Button) findViewById(R.id.btn_goNext);
         TextView practicing = (TextView) findViewById(R.id.practicing);
 
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        float densityDpi = dm.densityDpi;
+        Width = dm.widthPixels;
+        Height = dm.heightPixels;
+        centerX = Width / 2;
+        centerY = Height / 2;
+
+        int MaxCm = (int) ((Width * 2.54f) / densityDpi);
+        if (MaxCm >= 18) LinePixel = (densityDpi * 18f) / 2.54f;
+        else LinePixel = (densityDpi * ((float) MaxCm - 1f)) / 2.54f;
+
+        LinePixel *= 0.833f; //오차 보정(임의로 계산한 값)
+        LineMargin = (Width - LinePixel) / 2f;
+
+        this.X[0] = LineMargin;
+        this.X[1] = (LineMargin+LinePixel);
+        this.Y[0] = centerY;
+        this.Y[1] = centerY;
+
         //Set toast & btn
         if(isPractice==true){
             Toast.makeText(getApplicationContext(), "연습 테스트입니다. "+(3-loopNum)+"번 남았습니다.", Toast.LENGTH_SHORT).show();
@@ -61,9 +80,10 @@ public class LineBisection extends AppCompatActivity {
                 goNext.setText("검사 완료");
             }
         }
+
     }
 
-    //  참고: http://kitesoft.tistory.com/45
+    //  data save in sd carc 참고: http://kitesoft.tistory.com/45
     public void onClick_goNext (View view) throws IOException {
         //마지막에서 loop에서 파일 입력
         if(isPractice == false) {
@@ -91,29 +111,40 @@ public class LineBisection extends AppCompatActivity {
                 PrintWriter writer = new PrintWriter(wr);
                 PrintWriter writer_result = new PrintWriter(wr_result);
 
+
+
                 boolean isContact = false;
 
-                MyLineSet set = lineSetsStatic.get(0);
-                for (int j = 0; j < set.getLines().size(); ++j) {
-                    MyLine l = set.getLines().get(j);
+                for(int i=0; i<lineSetsStatic.size(); i++){
+                    MyLineSet set = lineSetsStatic.get(i);
+                    int count=0;
 
-                    double StartX = l.getStartPt().getX();
-                    double StartY = l.getStartPt().getY();
-                    double EndX = l.getEndPt().getX();
-                    double EndY = l.getEndPt().getY();
-                    String myTestMode = "LineBisection";
-                    String load = myTestMode + "," + loopNum + "," + StartX + "," + StartY + "," + EndX + "," + EndY + ",";
+                    for (int j = 0; j < set.getLines().size(); ++j) {
+                        count++;
+                        MyLine l = set.getLines().get(j);
 
-                    if (isContact == false) {
-                        isContact = isContacted(StartX, StartY, EndX, EndY);
-                        if (isContact == true) {
-                            String answer = ContactData(StartX, StartY, EndX, EndY);
-                            writer_result.println(answer);
+                        double StartX = l.getStartPt().getX();
+                        double StartY = l.getStartPt().getY();
+                        double EndX = l.getEndPt().getX();
+                        double EndY = l.getEndPt().getY();
+                        String myTestMode = "LineBisection";
+                        String load = myTestMode + "," + loopNum + "," + StartX + "," + StartY + "," + EndX + "," + EndY + ",";
+
+                        if(isContact == false){
+                            String xy = calculator(StartX, StartY, EndX, EndY);
+                            if(xy==null){
+                                //writer_result.println("fail, "+ loopNum + ","+StartX+", "+StartY+", "+EndX+", "+EndY+", ");
+                            }
+                            else{
+                                String answer = "LineBisection, "+ loopNum + "," +count +", "+ xy;
+                                writer_result.println(answer);
+                                isContact = true;
+                            }
                         }
-                    }
-                    writer.println(load);
-                }
 
+                        writer.println(load);
+                    }
+                }
                 lineSetsStatic.clear();
                 writer.close();
                 writer_result.close();
@@ -124,8 +155,7 @@ public class LineBisection extends AppCompatActivity {
             }
         }
 
-
-        //call next test
+        //call next test intent
         if((isPractice == true && loopNum <= 2) || (isPractice == false && loopNum < 10)){
             Loop loop;
             if(isPractice == true && loopNum == 2)
@@ -145,136 +175,54 @@ public class LineBisection extends AppCompatActivity {
         //실제 테스트 시 block
         super.onBackPressed();
     }
-
-    public boolean isContacted(double p1_x, double p1_y, double p2_x, double p2_y){
-        //F = float(double로 후에 변경), increase, constant, sameValue;
-        double FI1 = 0, FI2 = 0, FC1 = 0, FC2 = 0, FS1 = 0, FS2 = 0;
+    public String calculator(double p1_x, double p1_y, double p2_x, double p2_y) {
         double x, y;
-        double p3_x = X[0], p3_y = X[1], p4_x = Y[0], p4_y = Y[1];
+        double tmp;
 
-        if(p1_x == p2_x) FS1 = p1_x;
-        else{
-            FI1 = (p2_y - p1_y) / (p2_x - p1_x);
-            FC1 = p1_y - FI1*p1_x;
+        if (p1_y == p2_y) return null;
+        if (p1_y > p2_y) {
+            tmp = p1_y;
+            p1_y = p2_y;
+            p2_y = tmp;
         }
-        if(p3_x == p4_x) FS2 = p3_x;
-        else{
-            FI2 = (p4_y - p3_y) / (p4_x - p3_x);
-            FC2 = p3_y - FI2*p3_x;
+        if (p1_x > p2_x) {
+            tmp = p1_x;
+            p1_x = p2_x;
+            p2_x = tmp;
         }
+        if(p1_y <= centerY && centerY <= p2_y){}
+        else return null;
 
-        if(p1_x == p2_x && p3_x == p4_x) return false;
-        if(p1_x == p2_x){
-            x = FS1;
-            y = FI2*FS1+FC2;
-        }
-        else if(p3_x == p4_x){
-            x = FS2;
-            y = FI1*FS2+FC1;
-        }
-        else{
-            x = -(FC1-FC2) / (FI1-FI2);
-            y = FI1*x+FC1;
-        }
+        double a = Math.abs(p1_y-centerY);
+        double b = Math.abs(p2_y-centerY);
+        double xx = Math.abs(p2_x - p1_x);
 
-        if(x< p3_x || x> p4_x) return false;
-        if(x< p1_x || x> p2_x || y < p1_y || y > p2_y) return false;
+        x = p1_x + (xx*(a/(a+b)));
+        y = centerY;
 
-        return true;
+        if(x < LineMargin || x> (Width-LineMargin)) return null;
+
+        return (x+", "+y+"," + ErrorData(x));
     }
-
-    public Vertex isContacted_1(double p1_x, double p1_y, double p2_x, double p2_y){
-        //F = float(double로 후에 변경), increase, constant, sameValue;
-        double FI1 = 0, FI2 = 0, FC1 = 0, FC2 = 0, FS1 = 0, FS2 = 0;
-        double x, y;
-        double p3_x = X[0], p3_y = X[1], p4_x = Y[0], p4_y = Y[1];
-
-        if(p1_x == p2_x) FS1 = p1_x;
-        else{
-            FI1 = (p2_y - p1_y) / (p2_x - p1_x);
-            FC1 = p1_y - FI1*p1_x;
-        }
-        if(p3_x == p4_x) FS2 = p3_x;
-        else{
-            FI2 = (p4_y - p3_y) / (p4_x - p3_x);
-            FC2 = p3_y - FI2*p3_x;
-        }
-
-        if(p1_x == p2_x && p3_x == p4_x) return null;
-        if(p1_x == p2_x){
-            x = FS1;
-            y = FI2*FS1+FC2;
-        }
-        else if(p3_x == p4_x){
-            x = FS2;
-            y = FI1*FS2+FC1;
-        }
-        else{
-            x = -(FC1-FC2) / (FI1-FI2);
-            y = FI1*x+FC1;
-        }
-
-        if(x< p3_x || x> p4_x) return null;
-        if(x< p1_x || x> p2_x || y < p1_y || y > p2_y) return null;
-
-        return new Vertex( (float)x, (float)y );
-    }
-
-
-    public String ContactData(double p1_x, double p1_y, double p2_x, double p2_y){
-
-        //F = float(double로 후에 변경), increase, constant, sameValue;
-        double FI1 = 0, FI2 = 0, FC1 = 0, FC2 = 0, FS1 = 0, FS2 = 0;
-        double x, y;
-        double p3_x = X[0];
-        double p3_y = X[1];
-        double p4_x = Y[0];
-        double p4_y = Y[1];
-
-        if(p1_x == p2_x) FS1 = p1_x;
-        else{
-            FI1 = (p2_y - p1_y) / (p2_x - p1_x);
-            FC1 = p1_y - FI1*p1_x;
-        }
-        if(p3_x == p4_x) FS2 = p3_x;
-        else{
-            FI2 = (p4_y - p3_y) / (p4_x - p3_x);
-            FC2 = p3_y - FI2*p3_x;
-        }
-
-        if(p1_x == p2_x && p3_x == p4_x) return "Error code : -1";
-        if(p1_x == p2_x){
-            x = FS1;
-            y = FI2*FS1+FC2;
-        }
-        else if(p3_x == p4_x){
-            x = FS2;
-            y = FI1*FS2+FC1;
-        }
-        else{
-            x = -(FC1-FC2) / (FI1-FI2);
-            y = FI1*x+FC1;
-        }
-
-        if(x< p3_x || x> p4_x) return "Error code : -2 \n" + x + ", " + y;
-        if(x< p1_x || x> p2_x || y < p1_y || y > p2_y) return "Error code : -3 \n" + x + ", " + y;
-
-        return x+", "+y+"\n"+ErrorSize(x);
-    }
-
     //교점의 오차 출력
-    public String ErrorSize(double x){
+    public String ErrorData(double x){
 
         //float DPI = dm.densityDpi;
         float DPI = 560;
         double err_pixel = Math.abs(centerX-x);
         double err_mm = (err_pixel*2.54)/DPI*10;
-        double err_per = (err_pixel/LineLength)*100;
+        double err_per = (err_pixel/(Width-LineMargin))*100;
 
+        /*
         String a = String.format("%.1f", err_pixel)+"pixel";
         String b = String.format("%.1f", err_mm)+"mm";
         String c = String.format("%.1f", err_per)+"%";
         String result = "Error pixel : "+a+"\nError mm : "+b+"\nError per : "+c;
+        */
+        String result = err_pixel+", "+err_mm+", "+err_per+",";
+
+        // +반응시간
+        // +환산점수
 
         return result;
     }

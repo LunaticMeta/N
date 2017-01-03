@@ -57,7 +57,6 @@ public class DrawView extends View {
         if (MaxCm >= 18) LinePixel = (densityDpi * 18f) / 2.54f;
         else LinePixel = (densityDpi * ((float) MaxCm - 1f)) / 2.54f;
 
-
         LinePixel *= 0.833f; //오차 보정(임의로 계산한 값)
         LineMargin = (Width - LinePixel) / 2f;
 
