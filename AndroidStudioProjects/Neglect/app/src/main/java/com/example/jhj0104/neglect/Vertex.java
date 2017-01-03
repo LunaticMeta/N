@@ -15,6 +15,12 @@ public class Vertex {
         this.y = y;
         this.draw = false;
     }
+    public Vertex (float x, float y, float time){
+        this.x = x;
+        this.y = y;
+        this.time = time;
+        this.draw = false;
+    }
 
     // 그리기 여부
     public Vertex(float x, float y, boolean draw) {

@@ -33,6 +33,8 @@ public class LineBisection extends AppCompatActivity {
     float[] X = {LineMargin,(LineMargin+LinePixel)};
     float[] Y = {centerY,centerY};
 
+    long startTime, endTime, runTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,10 +83,14 @@ public class LineBisection extends AppCompatActivity {
             }
         }
 
+        startTime = System.currentTimeMillis();
     }
 
     //  data save in sd carc 참고: http://kitesoft.tistory.com/45
     public void onClick_goNext (View view) throws IOException {
+        endTime = System.currentTimeMillis();
+        runTime = (endTime - startTime)/1000; //(1000은 단위변환 milliseconds -> seconds)
+
         //마지막에서 loop에서 파일 입력
         if(isPractice == false) {
 
@@ -132,16 +138,12 @@ public class LineBisection extends AppCompatActivity {
 
                         if(isContact == false){
                             String xy = calculator(StartX, StartY, EndX, EndY);
-                            if(xy==null){
-                                //writer_result.println("fail, "+ loopNum + ","+StartX+", "+StartY+", "+EndX+", "+EndY+", ");
-                            }
-                            else{
-                                String answer = "LineBisection, "+ loopNum + "," +count +", "+ xy;
+                            if(xy!=null){
+                                String answer = "LineBisection, "+ loopNum + "," +count +", "+ xy +", "+runTime;
                                 writer_result.println(answer);
                                 isContact = true;
                             }
                         }
-
                         writer.println(load);
                     }
                 }
@@ -158,10 +160,9 @@ public class LineBisection extends AppCompatActivity {
         //call next test intent
         if((isPractice == true && loopNum <= 2) || (isPractice == false && loopNum < 10)){
             Loop loop;
-            if(isPractice == true && loopNum == 2)
-                loop = new Loop("LineBisection", false,1);
-            else
-                loop = new Loop("LineBisection", isPractice,loopNum+1);
+
+            if(isPractice == true && loopNum == 2) loop = new Loop("LineBisection", false,1);
+            else loop = new Loop("LineBisection", isPractice,loopNum+1);
 
             Intent intent = new Intent(getApplicationContext(),LineBisection.class);
             intent.putExtra("LoopData", loop);
@@ -221,7 +222,6 @@ public class LineBisection extends AppCompatActivity {
         */
         String result = err_pixel+", "+err_mm+", "+err_per+",";
 
-        // +반응시간
         // +환산점수
 
         return result;
