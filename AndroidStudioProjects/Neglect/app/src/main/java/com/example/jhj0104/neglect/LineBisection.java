@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,8 +37,7 @@ public class LineBisection extends AppCompatActivity {
     float[] Y = {centerY, centerY};
     long startTime, endTime, runTime;
 
-    File path, path_result;
-    File file, file_result;
+    File path, file, file_result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,24 +105,14 @@ public class LineBisection extends AppCompatActivity {
                 Toast.makeText(this, "SDcard Not Mounted", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             String absolutePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-            String foldername = "HelloWorld";
-            File dir = new File(Environment.getExternalStorageDirectory() + "/" + foldername);
-            if (dir.exists() && dir.isDirectory()) {
-                Log.d("log", "exists");
-            } else {
-                //noinspection ResultOfMethodCallIgnored
-                dir.mkdirs();
-                Log.d("log", "created");
-            }
-
             path = new File(getExternalCacheDir(), "NewDirectory");
-//            path = new File((absolutePath+"/Neglect"));
-//            if (!path.exists()) {
-//                path.mkdirs();
-//                Toast.makeText(getApplicationContext(), "create new folder", Toast.LENGTH_SHORT).show();
-//            }
+            path = new File((absolutePath+"/Neglect"));
+            if (!path.exists()) {
+                path.mkdirs();
+                Toast.makeText(getApplicationContext(), "create new folder", Toast.LENGTH_SHORT).show();
+            }
 
             file = new File(path, fileName + ".csv");
             file_result = new File(path, fileName + "_result.csv");
