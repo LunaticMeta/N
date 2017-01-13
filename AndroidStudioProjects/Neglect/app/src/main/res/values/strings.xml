@@ -5,6 +5,7 @@
     <string name="permission_network_finish">No network access permission. \nApp will finish soon</string>
     <string name="permission_network_reason">Network access permission is necessary for streaming.</string>
     <string name="permission_network_request">Network access permission is necessary for streaming.</string>
+    <string name="permission_broadcast_sticky_request">Gallery access permission is necessary for streaming.</string>
     <string name="permission_title">Regarding permission</string>
     <string name="permission_audio">No audio recording permission. \nAll audio function is disabled</string>
     <string name="permission_audio_recording_reason">Audio recording permission is necessary for movie capture with audio.</string>

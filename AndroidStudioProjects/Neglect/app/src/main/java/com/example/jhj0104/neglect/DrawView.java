@@ -35,15 +35,11 @@ public class DrawView extends View {
     private float LineMargin;
     private float centerY;
 
-    // gtlee code
     private boolean bPressed = false;
     private Vertex prevVtx = new Vertex(0,0);
     private MyLineSet set;
     public List<MyLineSet> lineSets = new ArrayList<>();
     private List<MyLineSet> lineSetsStatic = new ArrayList<>();
-    // end of gtlee code
-
-
     public List<MyLineSet> getLineSets(){
         return lineSetsStatic;
     }
@@ -83,7 +79,6 @@ public class DrawView extends View {
         mPaint.setStrokeWidth(5);
         mPaint.setAntiAlias(true);
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

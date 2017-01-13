@@ -9,23 +9,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
 /**
  * Created by jhj0104 on 2016-12-07.
  */
 
 public class NeglectCover extends AppCompatActivity{
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cover);
 
-        String[] permissions = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        String[] permissions = {android.Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_GRANTED);
     }
     public void onClick_coverLayout(View view){
-        Intent intent = new Intent(getApplicationContext(),NeglectMenu.class);
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
         startActivity(intent);
     }
 
@@ -37,10 +38,8 @@ public class NeglectCover extends AppCompatActivity{
                 // save file
             } else {
                 Toast.makeText(getApplicationContext(), "PERMISSION_DENIED", Toast.LENGTH_SHORT).show();
-
             }
         }
     }
 
-    //isStrotagePermissionGranted
 }
