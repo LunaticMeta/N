@@ -154,8 +154,8 @@ public class LineBisection extends AppCompatActivity implements MessageDialogFra
                         String myTestMode = "LineBisection";
 
                         if (i == 0 && j == 0 && loopNum == 1) {
-                            writer.println("TestName, " + "TestNum, " + "startX, " + "startY, " + "endX, " + "endY");
-                            writer_result.println("TestName, " + "TestNum, " + "X, " + "Y, " + "err_pixel, " + "err_mm, " + "err_per, " + "runTime");
+                            writer.println("TestName, " + "TestLoop, " + "startX, " + "startY, " + "endX, " + "endY");
+                            writer_result.println("TestName, " + "TestLoop, " + "X, " + "Y, " + "err_pixel, " + "err_mm, " + "err_percent, " + "runTime");
                         }
 
                         if (!isContact) {

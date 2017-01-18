@@ -113,6 +113,15 @@ public final class MainActivity extends Activity implements MessageDialogFragmen
         intent.putExtra("LoopData", loop);
         startActivity(intent);
     }
+    public void SLineBisection_Start(View view){
+//        Intent intent = new Intent(getApplicationContext(),CLineBisection.class);
+//        startActivity(intent);
+        new FileName();
+        Loop loop = new Loop("SLineBisection", true);
+        Intent intent = new Intent(this,SLineBisection.class);
+        intent.putExtra("LoopData", loop);
+        startActivity(intent);
+    }
 
     private void queryRecordingStatus() {
         if (DEBUG) Log.v(TAG, "queryRecording:");

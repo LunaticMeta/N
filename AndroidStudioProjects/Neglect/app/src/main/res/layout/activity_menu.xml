@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
     <TextView
         android:text="@string/Neglect"
         android:layout_width="match_parent"
@@ -10,31 +14,39 @@
         android:layout_marginTop="30dp"
         android:textSize="40dp"
         android:id="@+id/textView" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="검사시작"
+            android:layout_gravity="center"
+            android:layout_marginTop="60dp"
+            android:id="@+id/startNeglectTest"
+            android:onClick="onClick_startTest"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="실험시작"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:id="@+id/startExperiment"
+            android:onClick="onClick_startExperiment"/>
+
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="검사시작"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp"
-        android:id="@+id/startNeglectTest"
-        android:onClick="onClick_startTest"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="실험시작"
-        android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:id="@+id/startExperiment"
-        android:onClick="onClick_startExperiment"/>
-
-    <Button
-        android:layout_marginTop="300dp"
         android:layout_gravity="center"
         android:text="Character-Line Bisection\nTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/CharacterLineBisection"
         android:onClick="CLineBisection_Start"/>
+    <Button
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:text="Star-Line Bisection\nTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/StarLineBisection"
+        android:onClick="SLineBisection_Start"/>
 </LinearLayout>

@@ -18,10 +18,22 @@ public class Notice extends AppCompatActivity {
         setContentView(R.layout.notice);
     }
     public void identifyNotice(View view){
+
+        Loop loop3 = new Loop("SLineBisection", true);
+        Intent intent3 = new Intent(this,SLineBisection.class);
+        intent3.putExtra("LoopData", loop3);
+        startActivity(intent3);
+
+        Loop loop2 = new Loop("CLineBisection", true);
+        Intent intent2 = new Intent(this,CLineBisection.class);
+        intent2.putExtra("LoopData", loop2);
+        startActivity(intent2);
+
         Loop loop = new Loop("LineBisection", true);
         Intent intent = new Intent(this,LineBisection.class);
         intent.putExtra("LoopData", loop);
         startActivity(intent);
+
         finish();
     }
 }

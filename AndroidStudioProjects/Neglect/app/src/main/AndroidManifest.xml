@@ -48,6 +48,9 @@
         <activity android:name=".CLineBisection"
                   android:screenOrientation = "landscape">
         </activity>
+        <activity android:name=".SLineBisection"
+                  android:screenOrientation = "landscape">
+        </activity>
 
         <service
             android:name="com.example.jhj0104.neglect.service.ScreenRecorderService"
